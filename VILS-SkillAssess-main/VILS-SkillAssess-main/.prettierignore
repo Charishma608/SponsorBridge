@@ -1,0 +1,20 @@
+# Ignore node_modules directory
+node_modules/
+
+# Ignore built files or output directories
+dist/
+build/
+src/styles/
+
+# Ignore specific files
+config.js
+*.json
+
+# Ignore all files in the logs directory and its subdirectories
+logs/**
+
+# Readme Files
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
+README.md
+

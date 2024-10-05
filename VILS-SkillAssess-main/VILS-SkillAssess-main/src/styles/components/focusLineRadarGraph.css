@@ -1,0 +1,16 @@
+.focusLineRadarGraph-container{
+    padding: 5px 15px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: white;
+    border-radius: 5px;
+    border: 1.5px solid #0280D4;
+    overflow: hidden;
+}
+
+.focusLineRadarGraph-label, .focusLineRadarGraph-value{
+    font-size: 12px;
+    font-weight: 500;
+    color: #0280D4;
+}

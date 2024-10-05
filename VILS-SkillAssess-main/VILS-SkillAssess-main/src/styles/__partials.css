@@ -1,0 +1,102 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+/* Overriding Scrollbar Properties */
+
+/* width */
+::-webkit-scrollbar {
+    width: 0px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+    
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: rgba(217, 217, 217, 1);
+    border-radius: 20px;
+}
+    
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(169, 163, 163);
+}
+
+/* width */
+.horizontal-scroll::-webkit-scrollbar {
+    height: 0.5px;
+    width: 0px;
+}
+
+/* Track */
+.horizontal-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+    
+/* Handle */
+.horizontal-scroll::-webkit-scrollbar-thumb {
+    background: rgba(217, 217, 217, 1);
+    border-radius: 20px;
+}
+    
+/* Handle on hover */
+.horizontal-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgb(169, 163, 163);
+}
+
+iframe{
+    display: none !important;
+}
+
+#__doc_viewer_container__ iframe{
+    display: block !important;
+}
+
+/*===========================================================================================*/
+
+
+/* Helper Classes */
+
+.debug{
+    border: 2px solid red;
+}
+
+
+/*===========================================================================================*/
+
+/* Custom Classes */
+
+.shadow-stripe{
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+.shadow-light{
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+}
+
+.text-gradient{
+    background: linear-gradient(90deg, #0280D4 0%, #0ADAB0 113.36%);
+    -webkit-background-clip: text; /* Safari 4-5, Chrome 1-9 */
+    -moz-background-clip: text; /* Firefox 4-15 */
+    background-clip: text; /* Standard syntax (currently supported by most modern browsers) */
+    color: transparent;
+}
+
+.border-light {
+    border-color: rgba(229, 238, 244, 1);
+    border-width: 1.5px;
+}
+
+.bg-gradient{
+    background: linear-gradient(90deg, #0280D4 0%, #0ADAB0 113.36%);
+}
+
+.scroll::-webkit-scrollbar{
+    width: 3px !important;
+}
+
+.inter{
+    font-family: "Inter", sans-serif;
+}
+/*===========================================================================================*/

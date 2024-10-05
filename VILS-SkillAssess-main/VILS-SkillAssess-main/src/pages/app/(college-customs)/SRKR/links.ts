@@ -1,0 +1,22 @@
+export const CodingLinks: string[] = [
+    "/coding/test?id=coding-assessment-e1674e02-e2cb-4c26-b6cd-2954c6c95a3b",
+    "/coding/test?id=coding-assessment-df0f28fc-c1fa-4186-9c9c-d9e7ffdd43ca",
+    "/coding/test?id=coding-assessment-394856bb-5468-49d4-a2ec-d6a2fb2f4f68",
+    "/coding/test?id=coding-assessment-f36b41cc-e3c3-4670-8661-67a0d91b294d",
+    "/coding/test?id=coding-assessment-3fe2764b-c266-4cce-bee6-2ad6d74d535c",
+    "/coding/test?id=coding-assessment-17cdc516-6afa-4abb-9dd1-f788c13e78ed",
+    "/coding/test?id=coding-assessment-7c17c296-98bc-4427-9275-55ced0f4a5f2",
+    "/coding/test?id=coding-assessment-ec01187a-204b-4ac4-b7bc-d476304adf00",
+    "/coding/test?id=coding-assessment-e04fc4ae-11fd-45f3-a20d-9aaa4460b348",
+    "/coding/test?id=coding-assessment-a89c4aa6-f68c-4d99-a77e-d20e935db71e",
+    "/coding/test?id=coding-assessment-885a301c-0bee-4b47-a898-8530e3bbf4f1",
+    "/coding/test?id=coding-assessment-a1b77da6-2347-4870-8ac9-96f5c9710345",
+    "/coding/test?id=coding-assessment-a035c0a3-e3f1-4ce1-8c9c-a5e0738267bf",
+    "/coding/test?id=coding-assessment-ba910597-5f45-4f24-9d96-6e81fd73e603",
+    "/coding/test?id=coding-assessment-2d8644b2-a2fd-4604-8b14-2d68ce8d5b7c",
+    "/coding/test?id=coding-assessment-50fb8045-9e5f-4f9a-b0b6-2f4f9c9360af",
+    "/coding/test?id=coding-assessment-e15f0618-26a1-431f-9e05-b62b65bc4525",
+    "/coding/test?id=coding-assessment-2d76bbb7-6f44-43d6-9d3c-26732760059e",
+    "/coding/test?id=coding-assessment-ff82ddc6-e614-4525-a9fa-a5ee7a0b28a0",
+    "/coding/test?id=coding-assessment-e5053546-47fb-42a7-93a2-919d6c17db84"
+];

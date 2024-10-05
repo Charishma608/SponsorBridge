@@ -1,0 +1,6 @@
+@import url("./__partials.css");
+@import url("./icon-fonts/icons.css");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
