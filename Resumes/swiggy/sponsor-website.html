@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SponsorBridge — College Event Sponsors</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#0a0a0f;--surface:#12121a;--card:#1a1a28;
+      --accent1:#ff6b35;--accent2:#a855f7;--accent3:#22d3ee;
+      --gold:#fbbf24;--text:#f0f0f5;--muted:#7878a0;
+      --border:rgba(255,255,255,0.07);
+      --green:#22c55e;--red:#ef4444;--yellow:#f59e0b;
+    }
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+
+    /* ── BG ── */
+    .bg-grid{position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(168,85,247,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(168,85,247,.04) 1px,transparent 1px);background-size:48px 48px;pointer-events:none}
+    .bg-orb1{position:fixed;top:-200px;left:-100px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(168,85,247,.15) 0%,transparent 70%);pointer-events:none;z-index:0;animation:orbFloat 8s ease-in-out infinite}
+    .bg-orb2{position:fixed;bottom:-200px;right:-100px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,53,.12) 0%,transparent 70%);pointer-events:none;z-index:0;animation:orbFloat 10s ease-in-out infinite reverse}
+    @keyframes orbFloat{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
+
+    /* ── NAV ── */
+    nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:16px 48px;background:rgba(10,10,15,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+    .nav-logo{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;letter-spacing:-.5px;cursor:pointer}
+    .nav-logo span{color:var(--accent1)}
+    .nav-tag{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-left:12px;vertical-align:middle}
+    .nav-actions{display:flex;gap:8px;align-items:center}
+    .nav-pill{background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#fff;font-size:.8rem;font-weight:600;padding:9px 20px;border-radius:100px;border:none;cursor:pointer;transition:opacity .2s;font-family:'DM Sans',sans-serif;white-space:nowrap}
+    .nav-pill:hover{opacity:.85}
+    .nav-pill.outline{background:transparent;border:1px solid var(--border);color:var(--muted)}
+    .nav-pill.outline:hover{border-color:var(--accent2);color:var(--text);opacity:1}
+    .nav-pill.teal{background:linear-gradient(135deg,var(--accent3),var(--accent2))}
+    .nav-pill.dark{background:linear-gradient(135deg,#1e293b,#334155);border:1px solid rgba(255,255,255,.1)}
+    .nav-pill.dark:hover{border-color:var(--accent2);opacity:1}
+    .nav-avatar{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:6px 14px 6px 8px;cursor:pointer;font-size:.82rem}
+    .nav-avatar .dot{width:8px;height:8px;border-radius:50%}
+
+    /* ── PAGE SYSTEM ── */
+    .page{display:none}
+    .page.active{display:block}
+
+    /* ── HERO ── */
+    .hero{position:relative;z-index:1;text-align:center;padding:110px 20px 70px}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.3);border-radius:100px;padding:6px 16px;margin-bottom:28px;font-size:.78rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent2)}
+    .hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent2);animation:blink 1.5s ease-in-out infinite}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+    h1{font-family:'Syne',sans-serif;font-size:clamp(2.8rem,7vw,5.5rem);font-weight:800;line-height:1.05;letter-spacing:-2px;max-width:820px;margin:0 auto 24px}
+    h1 .line2{display:block;background:linear-gradient(135deg,var(--accent1),var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .hero-sub{color:var(--muted);font-size:1.1rem;max-width:560px;margin:0 auto 50px;line-height:1.7}
+    .hero-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+    .btn-hero{padding:14px 32px;border-radius:14px;font-size:1rem;font-weight:600;cursor:pointer;transition:all .25s;font-family:'DM Sans',sans-serif;border:none}
+    .btn-hero.primary{background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#fff;box-shadow:0 8px 30px rgba(168,85,247,.3)}
+    .btn-hero.primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(168,85,247,.4)}
+    .btn-hero.secondary{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+    .btn-hero.secondary:hover{border-color:var(--accent2);transform:translateY(-2px)}
+
+    /* ── STATS ── */
+    .stats-bar{position:relative;z-index:1;display:flex;justify-content:center;flex-wrap:wrap;gap:0;max-width:900px;margin:0 auto 80px;border:1px solid var(--border);border-radius:20px;background:var(--surface);overflow:hidden}
+    .stat-item{flex:1;min-width:160px;padding:28px 20px;text-align:center;border-right:1px solid var(--border)}
+    .stat-item:last-child{border-right:none}
+    .stat-num{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;background:linear-gradient(135deg,var(--accent1),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .stat-label{color:var(--muted);font-size:.8rem;margin-top:4px}
+
+    /* ── TIER LEGEND ── */
+    .section-wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 40px 70px}
+    .section-label{text-align:center;font-family:'Syne',sans-serif;font-size:.8rem;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:24px}
+    .tier-legend-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+    .tier-legend-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:24px;transition:transform .25s,border-color .25s}
+    .tier-legend-card:hover{transform:translateY(-4px);border-color:rgba(168,85,247,.3)}
+    .tier-legend-badge{display:inline-block;padding:5px 14px;border-radius:100px;font-size:.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px}
+    .tier-legend-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:8px}
+    .tier-legend-desc{font-size:.82rem;color:var(--muted);line-height:1.6;margin-bottom:14px}
+    .tier-legend-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+    .tier-legend-list li{font-size:.8rem;color:var(--text)}
+
+    /* ── TIER BADGES ── */
+    .tier-badge{margin-left:auto;flex-shrink:0;padding:4px 12px;border-radius:100px;font-size:.7rem;font-weight:600;letter-spacing:1px;text-transform:uppercase}
+    .tier-gold{background:rgba(251,191,36,.15);color:var(--gold);border:1px solid rgba(251,191,36,.3)}
+    .tier-silver{background:rgba(156,163,175,.15);color:#9ca3af;border:1px solid rgba(156,163,175,.3)}
+    .tier-bronze{background:rgba(180,83,9,.15);color:#d97706;border:1px solid rgba(180,83,9,.3)}
+    .tier-platinum{background:rgba(34,211,238,.15);color:var(--accent3);border:1px solid rgba(34,211,238,.3)}
+
+    /* ── EVENT TABS ── */
+    .selector-section{position:relative;z-index:1;padding:0 40px 80px}
+    .event-tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;max-width:900px;margin:0 auto 60px}
+    .tab{display:flex;align-items:center;gap:8px;padding:11px 22px;border-radius:100px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:.88rem;font-weight:500;cursor:pointer;transition:all .25s;user-select:none}
+    .tab:hover{border-color:var(--accent2);color:var(--text)}
+    .tab.active{background:linear-gradient(135deg,rgba(168,85,247,.2),rgba(255,107,53,.15));border-color:var(--accent2);color:var(--text);box-shadow:0 0 20px rgba(168,85,247,.2)}
+
+    /* ── SPONSORS GRID ── */
+    .sponsors-section{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 40px 100px}
+    .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:36px}
+    .section-title{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:700}
+    .section-title span{color:var(--accent1)}
+    .count-badge{background:var(--surface);border:1px solid var(--border);padding:6px 14px;border-radius:100px;font-size:.8rem;color:var(--muted)}
+    .sponsors-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px}
+    .sponsor-card{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;transition:transform .3s,border-color .3s,box-shadow .3s;animation:fadeUp .5s ease both}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    .sponsor-card:hover{transform:translateY(-6px);border-color:rgba(168,85,247,.4);box-shadow:0 20px 60px rgba(0,0,0,.4),0 0 30px rgba(168,85,247,.1)}
+    .card-header{display:flex;align-items:center;gap:16px;padding:24px 24px 18px;border-bottom:1px solid var(--border)}
+    .sponsor-logo{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0}
+    .sponsor-name{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:4px}
+    .sponsor-category{font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+    .card-body{padding:20px 24px}
+    .sponsor-desc{font-size:.88rem;color:var(--muted);line-height:1.65;margin-bottom:18px}
+    .offerings{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:20px}
+    .offering-tag{background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.2);color:var(--accent2);font-size:.72rem;padding:4px 10px;border-radius:6px}
+    .contact-grid{display:flex;flex-direction:column;gap:10px;padding:16px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px}
+    .contact-row{display:flex;align-items:center;gap:10px;font-size:.83rem}
+    .contact-icon{font-size:1rem;flex-shrink:0;width:20px;text-align:center}
+    .contact-val{color:var(--text)}
+    .contact-val a{color:var(--accent3);text-decoration:none}
+    .contact-val a:hover{text-decoration:underline}
+    .card-actions{display:flex;gap:10px;padding:16px 24px 22px}
+    .btn-contact{flex:1;padding:11px;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#fff;border:none;border-radius:12px;font-size:.85rem;font-weight:600;cursor:pointer;transition:opacity .2s}
+    .btn-contact:hover{opacity:.85}
+    .btn-website{padding:11px 18px;background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:12px;font-size:.85rem;cursor:pointer;transition:all .2s}
+    .btn-website:hover{border-color:var(--accent3);color:var(--accent3)}
+    .empty-state{grid-column:1/-1;text-align:center;padding:80px 20px;color:var(--muted)}
+    .empty-state .big-icon{font-size:4rem;margin-bottom:16px}
+
+    /* ── AUTH PAGES (Login / Signup) ── */
+    .auth-page{position:relative;z-index:1;min-height:calc(100vh - 72px);display:flex;align-items:center;justify-content:center;padding:60px 20px}
+    .auth-card{background:var(--card);border:1px solid rgba(168,85,247,.2);border-radius:28px;padding:48px 44px;max-width:480px;width:100%;animation:fadeUp .5s ease both}
+    .auth-icon{font-size:2.4rem;margin-bottom:14px}
+    .auth-title{font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;margin-bottom:6px}
+    .auth-sub{color:var(--muted);font-size:.88rem;margin-bottom:32px;line-height:1.6}
+    /* role selector on signup */
+    .role-selector{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px}
+    .role-card{background:var(--surface);border:2px solid var(--border);border-radius:16px;padding:20px 16px;text-align:center;cursor:pointer;transition:all .25s;user-select:none}
+    .role-card:hover{border-color:rgba(168,85,247,.4)}
+    .role-card.selected{border-color:var(--accent2);background:rgba(168,85,247,.1)}
+    .role-card .role-icon{font-size:2rem;margin-bottom:8px}
+    .role-card .role-name{font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;margin-bottom:4px}
+    .role-card .role-desc{font-size:.75rem;color:var(--muted);line-height:1.4}
+    .auth-field{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+    .auth-field label{font-size:.78rem;color:var(--muted);letter-spacing:.5px}
+    .auth-field input,.auth-field select{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:10px;padding:12px 16px;color:var(--text);font-size:.9rem;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s}
+    .auth-field input:focus,.auth-field select:focus{border-color:var(--accent2)}
+    .auth-field select option{background:#1a1a28}
+    .auth-divider{display:flex;align-items:center;gap:14px;margin:20px 0;color:var(--muted);font-size:.8rem}
+    .auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+    .auth-error{color:#f87171;font-size:.82rem;margin-bottom:12px;min-height:18px}
+    .auth-link{text-align:center;font-size:.85rem;color:var(--muted);margin-top:20px}
+    .auth-link a{color:var(--accent3);text-decoration:none;cursor:pointer;font-weight:500}
+    .auth-link a:hover{text-decoration:underline}
+    .auth-hint{margin-top:14px;font-size:.75rem;color:var(--muted);text-align:center;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:10px}
+
+    /* ── FORM STYLES (shared) ── */
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+    .form-group{display:flex;flex-direction:column;gap:7px}
+    .form-group.full{margin-bottom:14px}
+    .form-group label{font-size:.78rem;color:var(--muted);letter-spacing:.5px}
+    .form-group input,.form-group select,.form-group textarea{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-size:.88rem;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s}
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent2)}
+    .form-group select option{background:#1a1a28}
+    .form-group textarea{resize:vertical}
+    .checkbox-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:4px}
+    .checkbox-item{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:.82rem;cursor:pointer;transition:all .2s}
+    .checkbox-item:hover{border-color:var(--accent2)}
+    .checkbox-item input{accent-color:var(--accent2);cursor:pointer}
+    .tier-radio-grid{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+    .tier-radio{display:flex;align-items:center;gap:8px;cursor:pointer}
+    .tier-radio input{accent-color:var(--accent2);cursor:pointer}
+    .form-error{color:#f87171;font-size:.82rem;margin-bottom:10px;min-height:18px}
+    .btn-submit{width:100%;padding:14px;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#fff;border:none;border-radius:12px;font-size:.95rem;font-weight:600;cursor:pointer;transition:opacity .2s;font-family:'DM Sans',sans-serif}
+    .btn-submit:hover{opacity:.85}
+
+    /* ── SPONSOR REGISTER SECTION (inside main browse) ── */
+    .register-section{position:relative;z-index:1;padding:80px 40px 100px;background:linear-gradient(180deg,transparent,rgba(168,85,247,.04),transparent);border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:60px}
+    .register-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1.4fr;gap:60px;align-items:start}
+    .register-title{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,3vw,2.8rem);font-weight:800;line-height:1.1;margin-bottom:16px}
+    .register-title span{background:linear-gradient(135deg,var(--accent1),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .register-sub{color:var(--muted);line-height:1.7;margin-bottom:36px;font-size:.95rem}
+    .register-perks{display:flex;flex-direction:column;gap:20px}
+    .perk{display:flex;gap:16px;align-items:flex-start}
+    .perk>span{font-size:1.5rem;margin-top:2px}
+    .perk strong{display:block;font-size:.95rem;margin-bottom:4px}
+    .perk p{color:var(--muted);font-size:.82rem}
+    .register-form-card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:36px}
+    .form-title{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:4px}
+    .form-subtitle{color:var(--muted);font-size:.8rem;margin-bottom:28px}
+
+    /* ── THANK YOU PAGE ── */
+    .center-page{position:relative;z-index:1;min-height:80vh;display:flex;align-items:center;justify-content:center;padding:60px 20px}
+    .thankyou-card{background:var(--card);border:1px solid rgba(168,85,247,.3);border-radius:32px;padding:60px 50px;max-width:580px;width:100%;text-align:center;box-shadow:0 0 80px rgba(168,85,247,.1);animation:fadeUp .6s ease both}
+    .ty-icon{font-size:4.5rem;margin-bottom:24px;animation:popIn .5s cubic-bezier(.175,.885,.32,1.275) .2s both}
+    @keyframes popIn{from{transform:scale(0)}to{transform:scale(1)}}
+    .ty-title{font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;margin-bottom:14px}
+    .ty-title span{background:linear-gradient(135deg,var(--accent1),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .ty-msg{color:var(--muted);font-size:1rem;line-height:1.75;margin-bottom:32px}
+    .ty-steps{display:flex;flex-direction:column;gap:12px;margin-bottom:36px;text-align:left}
+    .ty-step{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:14px 18px;font-size:.88rem}
+    .ty-step-num{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent2),var(--accent1));display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;color:#fff}
+    .ty-ref{font-size:.78rem;color:var(--muted);margin-bottom:28px}
+    .ty-ref strong{color:var(--accent3)}
+    .btn-back{display:inline-block;padding:13px 36px;background:var(--surface);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:.9rem;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+    .btn-back:hover{border-color:var(--accent2);color:var(--accent2)}
+
+    /* ── SPONSOR DASHBOARD (My Application) ── */
+    .sponsor-dash{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:50px 40px}
+    .dash-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:40px;flex-wrap:wrap;gap:16px}
+    .dash-title{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800}
+    .dash-title span{color:var(--accent2)}
+    .status-banner{display:flex;align-items:center;gap:16px;padding:20px 24px;border-radius:16px;margin-bottom:32px}
+    .status-banner.pending{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3)}
+    .status-banner.approved{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.3)}
+    .status-banner.rejected{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3)}
+    .status-banner-icon{font-size:2rem}
+    .status-banner-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:4px}
+    .status-banner-msg{font-size:.85rem;color:var(--muted)}
+    .app-detail-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px;margin-bottom:20px}
+    .app-detail-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:8px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-size:.78rem}
+    .app-detail-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+    .app-detail-item{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:14px}
+    .app-detail-label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+    .app-detail-val{font-size:.9rem}
+    .events-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+    .event-tag{background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.2);color:var(--accent2);font-size:.72rem;padding:4px 10px;border-radius:6px}
+    .no-app-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:60px 40px;text-align:center}
+    .no-app-icon{font-size:3.5rem;margin-bottom:16px}
+
+    /* ── ADMIN LOGIN ── */
+    .admin-login-card{background:var(--card);border:1px solid rgba(168,85,247,.25);border-radius:28px;padding:50px 44px;max-width:440px;width:100%;animation:fadeUp .5s ease both}
+
+    /* ── ADMIN DASHBOARD ── */
+    .admin-page{position:relative;z-index:1;padding:40px;max-width:1200px;margin:0 auto}
+    .admin-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:36px;flex-wrap:wrap;gap:16px}
+    .admin-title{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800}
+    .admin-title span{color:var(--accent2)}
+    .admin-logout{padding:9px 20px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#f87171;border-radius:100px;font-size:.82rem;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+    .admin-logout:hover{background:rgba(239,68,68,.2)}
+    .admin-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:40px}
+    .admin-stat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px 20px}
+    .admin-stat-num{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;margin-bottom:4px}
+    .admin-stat-label{color:var(--muted);font-size:.8rem}
+    .admin-tabs{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap}
+    .admin-tab{padding:9px 22px;border-radius:100px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:.85rem;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+    .admin-tab.active{background:rgba(168,85,247,.15);border-color:var(--accent2);color:var(--text)}
+    .admin-tab .cnt{display:inline-block;background:var(--accent2);color:#fff;border-radius:100px;padding:1px 8px;font-size:.7rem;margin-left:6px}
+    .requests-list{display:flex;flex-direction:column;gap:14px}
+    .request-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:border-color .2s}
+    .request-card:hover{border-color:rgba(168,85,247,.3)}
+    .request-header{display:flex;align-items:center;gap:14px;padding:18px 22px;cursor:pointer}
+    .req-logo{width:46px;height:46px;border-radius:12px;background:rgba(168,85,247,.15);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+    .req-info{flex:1}
+    .req-name{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:3px}
+    .req-meta{font-size:.78rem;color:var(--muted)}
+    .req-status{padding:5px 14px;border-radius:100px;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;flex-shrink:0}
+    .status-pending{background:rgba(245,158,11,.15);color:var(--yellow);border:1px solid rgba(245,158,11,.3)}
+    .status-approved{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3)}
+    .status-rejected{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3)}
+    .req-expand{transition:transform .2s;font-size:.9rem;color:var(--muted)}
+    .req-expand.open{transform:rotate(180deg)}
+    .request-body{display:none;padding:0 22px 20px;border-top:1px solid var(--border)}
+    .request-body.open{display:block}
+    .req-detail-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin:18px 0}
+    .req-detail-item{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+    .req-detail-label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+    .req-detail-val{font-size:.88rem}
+    .req-actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+    .btn-approve{padding:10px 24px;background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);color:var(--green);border-radius:10px;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+    .btn-approve:hover{background:rgba(34,197,94,.25)}
+    .btn-reject{padding:10px 24px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--red);border-radius:10px;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+    .btn-reject:hover{background:rgba(239,68,68,.2)}
+    .admin-empty{text-align:center;padding:60px 20px;color:var(--muted)}
+    .admin-empty .big-icon{font-size:3rem;margin-bottom:14px}
+
+    /* ── USERS LIST in ADMIN ── */
+    .users-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+    .user-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+    .user-card-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+    .user-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+    .user-name{font-weight:700;font-size:.95rem}
+    .user-role-tag{font-size:.7rem;padding:2px 10px;border-radius:100px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+    .role-user-tag{background:rgba(34,211,238,.12);color:var(--accent3);border:1px solid rgba(34,211,238,.25)}
+    .role-sponsor-tag{background:rgba(168,85,247,.12);color:var(--accent2);border:1px solid rgba(168,85,247,.25)}
+    .user-detail{font-size:.8rem;color:var(--muted);line-height:1.7}
+
+    /* ── MODAL ── */
+    .modal-overlay{position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+    .modal-overlay.open{opacity:1;pointer-events:all}
+    .modal{background:var(--card);border:1px solid rgba(168,85,247,.3);border-radius:24px;padding:40px;max-width:480px;width:90%;transform:scale(.9);transition:transform .3s}
+    .modal-overlay.open .modal{transform:scale(1)}
+    .modal h3{font-family:'Syne',sans-serif;font-size:1.4rem;margin-bottom:8px}
+    .modal p{color:var(--muted);margin-bottom:24px;font-size:.9rem}
+    .modal-contact{display:flex;flex-direction:column;gap:14px}
+    .modal-contact-item{display:flex;align-items:center;gap:14px;padding:14px 18px;background:rgba(255,255,255,.04);border-radius:12px}
+    .modal-close{display:block;width:100%;margin-top:24px;padding:13px;background:var(--surface);color:var(--muted);border:1px solid var(--border);border-radius:12px;cursor:pointer;font-size:.9rem;font-family:'DM Sans',sans-serif}
+    .modal-close:hover{background:rgba(255,255,255,.06)}
+
+    /* ── FOOTER ── */
+    footer{position:relative;z-index:1;text-align:center;padding:40px;border-top:1px solid var(--border);color:var(--muted);font-size:.82rem}
+    footer strong{color:var(--accent1)}
+
+    /* ── TOAST ── */
+    .toast{position:fixed;bottom:30px;right:30px;z-index:9999;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 22px;font-size:.88rem;display:flex;align-items:center;gap:10px;box-shadow:0 8px 40px rgba(0,0,0,.4);transform:translateY(80px);opacity:0;transition:all .4s cubic-bezier(.175,.885,.32,1.275);pointer-events:none;max-width:360px}
+    .toast.show{transform:translateY(0);opacity:1}
+    .toast.green{border-color:rgba(34,197,94,.4)}
+    .toast.red{border-color:rgba(239,68,68,.4)}
+
+    @media(max-width:768px){
+      nav{padding:14px 20px}
+      .register-inner{grid-template-columns:1fr;gap:40px}
+      .form-row{grid-template-columns:1fr}
+      .admin-page{padding:20px}
+      .auth-card{padding:32px 24px}
+      .sponsor-dash{padding:30px 20px}
+    }
+  </style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-orb1"></div>
+<div class="bg-orb2"></div>
+
+<!-- ── NAV ── -->
+<nav>
+  <div style="cursor:pointer" onclick="goHome()">
+    <span class="nav-logo">Sponsor<span>Bridge</span></span>
+    <span class="nav-tag">For Colleges</span>
+  </div>
+  <div class="nav-actions" id="navActions"></div>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════════════════
+     PAGE: LANDING (not logged in)
+══════════════════════════════════════════ -->
+<div id="page-landing" class="page active">
+  <section class="hero">
+    <div class="hero-badge">🎓 Platform for Campus Events</div>
+    <h1>Connect Your Event<br><span class="line2">With the Right Sponsors</span></h1>
+    <p class="hero-sub">The bridge between college events and the brands that want to support them. Sign up to get started.</p>
+    <div class="hero-ctas">
+      <button class="btn-hero primary" onclick="showPage('signup')">Get Started Free →</button>
+      <button class="btn-hero secondary" onclick="showPage('login')">Login</button>
+    </div>
+  </section>
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-num" id="statTotal">14</div><div class="stat-label">Active Sponsors</div></div>
+    <div class="stat-item"><div class="stat-num">8</div><div class="stat-label">Event Categories</div></div>
+    <div class="stat-item"><div class="stat-num">₹50L+</div><div class="stat-label">Funding Facilitated</div></div>
+    <div class="stat-item"><div class="stat-num">300+</div><div class="stat-label">Events Sponsored</div></div>
+  </div>
+  <footer>Built for college organizers. <strong>SponsorBridge</strong> · Connect · Fund · Celebrate</footer>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE: SIGNUP
+══════════════════════════════════════════ -->
+<div id="page-signup" class="page">
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-icon">✨</div>
+      <div class="auth-title">Create Account</div>
+      <div class="auth-sub">Choose your role to get the right experience.</div>
+
+      <div class="role-selector">
+        <div class="role-card selected" id="role-user" onclick="selectRole('user')">
+          <div class="role-icon">🎓</div>
+          <div class="role-name">College User</div>
+          <div class="role-desc">Browse sponsors & contact them for your events</div>
+        </div>
+        <div class="role-card" id="role-sponsor" onclick="selectRole('sponsor')">
+          <div class="role-icon">🏢</div>
+          <div class="role-name">Sponsor</div>
+          <div class="role-desc">Register your company and get discovered by colleges</div>
+        </div>
+      </div>
+
+      <div class="auth-field"><label>Full Name *</label><input type="text" id="su_name" placeholder="Your full name"/></div>
+      <div class="auth-field"><label>Email Address *</label><input type="email" id="su_email" placeholder="you@example.com"/></div>
+      <div class="auth-field"><label>Password *</label><input type="password" id="su_pass" placeholder="Min. 6 characters"/></div>
+
+      <!-- Extra field for user -->
+      <div id="su_user_extra">
+        <div class="auth-field"><label>College / Institution *</label><input type="text" id="su_college" placeholder="e.g. IIT Madras"/></div>
+      </div>
+      <!-- Extra fields for sponsor -->
+      <div id="su_sponsor_extra" style="display:none">
+        <div class="auth-field"><label>Company Name *</label><input type="text" id="su_company" placeholder="e.g. TechNova Pvt Ltd"/></div>
+        <div class="auth-field"><label>Industry *</label>
+          <select id="su_industry">
+            <option value="">Select industry</option>
+            <option>Technology</option><option>Finance & Banking</option><option>Sports & Fitness</option>
+            <option>Food & Beverages</option><option>Media & Entertainment</option><option>Education</option>
+            <option>E-Commerce</option><option>Healthcare</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="auth-error" id="su_error"></div>
+      <button class="btn-submit" onclick="doSignup()">Create Account →</button>
+      <div class="auth-link">Already have an account? <a onclick="showPage('login')">Login here</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE: LOGIN
+══════════════════════════════════════════ -->
+<div id="page-login" class="page">
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-icon">🔑</div>
+      <div class="auth-title">Welcome Back</div>
+      <div class="auth-sub">Login to your SponsorBridge account.</div>
+
+      <div class="auth-field"><label>Email Address</label><input type="email" id="li_email" placeholder="you@example.com" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="li_pass" placeholder="Your password" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+      <div class="auth-error" id="li_error"></div>
+      <button class="btn-submit" onclick="doLogin()">Login →</button>
+
+      <div class="auth-divider">or</div>
+      <button class="btn-submit" style="background:linear-gradient(135deg,#1e293b,#334155);border:1px solid rgba(255,255,255,.1)" onclick="showPage('adminLogin')">⚙ Admin Login</button>
+
+      <div class="auth-link">Don't have an account? <a onclick="showPage('signup')">Sign up free</a></div>
+      <!-- <div class="auth-hint">
+        <strong>Demo:</strong> Sign up first to get credentials.<br/>
+        Or use pre-loaded: <strong>user@demo.com</strong> / <strong>demo123</strong> (User) · <strong>sponsor@demo.com</strong> / <strong>demo123</strong> (Sponsor)
+      </div> -->
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE: BROWSE (User logged in)
+══════════════════════════════════════════ -->
+<div id="page-browse" class="page">
+  <section class="hero" style="padding-top:70px">
+    <div class="hero-badge">🎓 Welcome back, <span id="browseUserName">User</span></div>
+    <h1 style="font-size:clamp(2rem,5vw,3.5rem)">Find Your <span class="line2">Perfect Sponsor</span></h1>
+    <p class="hero-sub">Select your event type and discover sponsors ready to fund your next big event.</p>
+  </section>
+
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-num" id="bStatTotal">14</div><div class="stat-label">Active Sponsors</div></div>
+    <div class="stat-item"><div class="stat-num">8</div><div class="stat-label">Event Categories</div></div>
+    <div class="stat-item"><div class="stat-num">₹50L+</div><div class="stat-label">Funding Facilitated</div></div>
+    <div class="stat-item"><div class="stat-num">300+</div><div class="stat-label">Events Sponsored</div></div>
+  </div>
+
+  <div class="section-wrap">
+    <p class="section-label">Sponsorship Tiers Explained</p>
+    <div class="tier-legend-grid">
+      <div class="tier-legend-card"><div class="tier-legend-badge tier-platinum">Platinum</div><div class="tier-legend-title">Highest Value</div><p class="tier-legend-desc">Largest cash grants, premium resources, full-package support.</p><ul class="tier-legend-list"><li>💰 Biggest funding</li><li>🎁 Full resource packages</li><li>🤝 Long-term partnerships</li></ul></div>
+      <div class="tier-legend-card"><div class="tier-legend-badge tier-gold">Gold</div><div class="tier-legend-title">Strong Support</div><p class="tier-legend-desc">Solid mix of cash, products, and brand activations.</p><ul class="tier-legend-list"><li>💰 High funding</li><li>📦 Products & branding</li><li>📣 Promotions included</li></ul></div>
+      <div class="tier-legend-card"><div class="tier-legend-badge tier-silver">Silver</div><div class="tier-legend-title">Moderate Support</div><p class="tier-legend-desc">Platform access, giveaways, moderate cash prizes.</p><ul class="tier-legend-list"><li>💰 Moderate funding</li><li>🎟️ Platform / tool access</li><li>🎁 Giveaways & swag</li></ul></div>
+      <div class="tier-legend-card"><div class="tier-legend-badge tier-bronze">Bronze</div><div class="tier-legend-title">Niche Support</div><p class="tier-legend-desc">Materials, kits, certifications, and non-cash support.</p><ul class="tier-legend-list"><li>📦 Materials & kits</li><li>📜 Certifications</li><li>🌱 Awareness support</li></ul></div>
+    </div>
+  </div>
+
+  <section class="selector-section">
+    <p class="section-label">Select Your Event Type</p>
+    <div class="event-tabs" id="eventTabs">
+      <div class="tab active" data-event="all">🌐 All Events</div>
+      <div class="tab" data-event="tech">💻 Tech & Hackathon</div>
+      <div class="tab" data-event="cultural">🎭 Cultural Fest</div>
+      <div class="tab" data-event="sports">⚽ Sports Meet</div>
+      <div class="tab" data-event="business">💼 Business Summit</div>
+      <div class="tab" data-event="music">🎵 Music & Arts</div>
+      <div class="tab" data-event="science">🔬 Science Expo</div>
+      <div class="tab" data-event="social">🌱 Social Impact</div>
+    </div>
+  </section>
+
+  <section class="sponsors-section">
+    <div class="section-header">
+      <div class="section-title">Available <span id="eventLabel">Sponsors</span></div>
+      <div class="count-badge" id="countBadge">Showing all</div>
+    </div>
+    <div class="sponsors-grid" id="sponsorsGrid"></div>
+  </section>
+  <!-- Sponsor registration form — only shown to sponsors with no application -->
+  <section id="sponsorRegSection" style="display:none;position:relative;z-index:1;padding:80px 40px 60px;border-top:1px solid var(--border)">
+    <div style="max-width:800px;margin:0 auto">
+      <div style="margin-bottom:32px;text-align:center">
+        <div class="hero-badge" style="margin-bottom:16px;display:inline-flex">🏢 List Your Company</div>
+        <h2 style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;margin-bottom:10px">Register as a <span style="background:linear-gradient(135deg,var(--accent1),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">Sponsor</span></h2>
+        <p style="color:var(--muted);font-size:.95rem">Fill in your details below. Our admin team will review and publish your listing.</p>
+      </div>
+      <div class="register-form-card">
+        <h3 class="form-title">Sponsorship Details</h3>
+        <p class="form-subtitle">Free to list · Pending admin approval · No hidden charges</p>
+        <div class="form-row">
+          <div class="form-group"><label>Phone Number *</label><input type="tel" id="sf_phone" placeholder="+91 98765 43210"/></div>
+          <div class="form-group"><label>Designation / Role</label><input type="text" id="sf_designation" placeholder="e.g. Marketing Head"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Company Website</label><input type="text" id="sf_website" placeholder="www.yourcompany.com"/></div>
+          <div class="form-group"><label>City / Location *</label><input type="text" id="sf_city" placeholder="e.g. Bengaluru"/></div>
+        </div>
+        <div class="form-group full">
+          <label>Events You Want to Sponsor *</label>
+          <div class="checkbox-grid">
+            <label class="checkbox-item"><input type="checkbox" value="tech"/> 💻 Tech & Hackathon</label>
+            <label class="checkbox-item"><input type="checkbox" value="cultural"/> 🎭 Cultural Fest</label>
+            <label class="checkbox-item"><input type="checkbox" value="sports"/> ⚽ Sports Meet</label>
+            <label class="checkbox-item"><input type="checkbox" value="business"/> 💼 Business Summit</label>
+            <label class="checkbox-item"><input type="checkbox" value="music"/> 🎵 Music & Arts</label>
+            <label class="checkbox-item"><input type="checkbox" value="science"/> 🔬 Science Expo</label>
+            <label class="checkbox-item"><input type="checkbox" value="social"/> 🌱 Social Impact</label>
+          </div>
+        </div>
+        <div class="form-group full">
+          <label>Preferred Sponsorship Tier</label>
+          <div class="tier-radio-grid">
+            <label class="tier-radio"><input type="radio" name="sf_tier" value="platinum"/><span class="tier-badge tier-platinum">Platinum</span></label>
+            <label class="tier-radio"><input type="radio" name="sf_tier" value="gold"/><span class="tier-badge tier-gold">Gold</span></label>
+            <label class="tier-radio"><input type="radio" name="sf_tier" value="silver" checked/><span class="tier-badge tier-silver">Silver</span></label>
+            <label class="tier-radio"><input type="radio" name="sf_tier" value="bronze"/><span class="tier-badge tier-bronze">Bronze</span></label>
+          </div>
+        </div>
+        <div class="form-group full">
+          <label>What will you offer? (e.g. Cash, Swag, Equipment)</label>
+          <input type="text" id="sf_offerings" placeholder="e.g. Cash Sponsorship, Swag Kits, Mentorship"/>
+        </div>
+        <div class="form-group full">
+          <label>About / Description *</label>
+          <textarea id="sf_desc" rows="3" placeholder="Briefly describe your company and sponsorship goals..."></textarea>
+        </div>
+        <div class="form-error" id="sf_error"></div>
+        <button class="btn-submit" onclick="submitSponsorForm()">Submit for Review →</button>
+      </div>
+    </div>
+  </section>
+  <footer>Built for college organizers. <strong>SponsorBridge</strong> · Connect · Fund · Celebrate</footer>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE: SPONSOR DASHBOARD (Sponsor logged in)
+══════════════════════════════════════════ -->
+<div id="page-sponsordash" class="page">
+  <div class="sponsor-dash">
+    <div class="dash-header">
+      <div>
+        <div class="dash-title">My <span>Application</span></div>
+        <div style="color:var(--muted);font-size:.85rem;margin-top:4px">Track your sponsorship registration status</div>
+      </div>
+    </div>
+    <div id="sponsorDashContent"></div>
+  </div>
+</div>
+
+
+
+<!-- ══════════════════════════════════════════
+     PAGE: THANK YOU
+══════════════════════════════════════════ -->
+<div id="page-thankyou" class="page">
+  <div class="center-page">
+    <div class="thankyou-card">
+      <div class="ty-icon">🎉</div>
+      <h2 class="ty-title">Thank You for <span>Registering!</span></h2>
+      <p class="ty-msg">Your sponsorship application has been received. Our admin team will review it carefully and update your status shortly.</p>
+      <div class="ty-steps">
+        <div class="ty-step"><div class="ty-step-num">1</div><span>Application is now under admin review</span></div>
+        <div class="ty-step"><div class="ty-step-num">2</div><span>You'll be notified within 24 hours of a decision</span></div>
+        <div class="ty-step"><div class="ty-step-num">3</div><span>Once approved, your company goes live on SponsorBridge</span></div>
+      </div>
+      <p class="ty-ref">Reference ID: <strong id="tyRefId">--</strong></p>
+      <button class="btn-back" onclick="renderSponsors('all');showPage('browse')">View My Application →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE: ADMIN LOGIN
+══════════════════════════════════════════ -->
+<div id="page-adminLogin" class="page">
+  <div class="auth-page">
+    <div class="admin-login-card">
+      <div class="auth-icon">🔐</div>
+      <div class="auth-title">Admin Login</div>
+      <div class="auth-sub">Restricted access — SponsorBridge administrators only.</div>
+      <div class="auth-field"><label>Username</label><input type="text" id="al_user" placeholder="admin"/></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="al_pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doAdminLogin()"/></div>
+      <div class="auth-error" id="al_error"></div>
+      <button class="btn-submit" onclick="doAdminLogin()">Login to Dashboard →</button>
+      <!-- <div class="auth-hint">Demo credentials: <strong>admin</strong> / <strong>admin123</strong></div> -->
+      <div style="margin-top:16px;text-align:center"><button class="btn-back" onclick="showPage('login')" style="font-size:.8rem;padding:8px 20px">← Back</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE: ADMIN DASHBOARD
+══════════════════════════════════════════ -->
+<div id="page-admin" class="page">
+  <div class="admin-page">
+    <div class="admin-topbar">
+      <div>
+        <div class="admin-title">Admin <span>Dashboard</span></div>
+        <div style="color:var(--muted);font-size:.82rem;margin-top:4px">Manage sponsor registrations, approvals & users</div>
+      </div>
+      <button class="admin-logout" onclick="doAdminLogout()">⬅ Logout</button>
+    </div>
+
+    <div class="admin-stats">
+      <div class="admin-stat-card"><div class="admin-stat-num" id="aS-total" style="color:var(--accent2)">0</div><div class="admin-stat-label">Total Requests</div></div>
+      <div class="admin-stat-card"><div class="admin-stat-num" id="aS-pending" style="color:var(--yellow)">0</div><div class="admin-stat-label">Pending</div></div>
+      <div class="admin-stat-card"><div class="admin-stat-num" id="aS-approved" style="color:var(--green)">0</div><div class="admin-stat-label">Approved</div></div>
+      <div class="admin-stat-card"><div class="admin-stat-num" id="aS-rejected" style="color:var(--red)">0</div><div class="admin-stat-label">Rejected</div></div>
+      <div class="admin-stat-card"><div class="admin-stat-num" id="aS-live" style="color:var(--accent3)">0</div><div class="admin-stat-label">Live on Site</div></div>
+      <div class="admin-stat-card"><div class="admin-stat-num" id="aS-users" style="color:var(--accent1)">0</div><div class="admin-stat-label">Registered Users</div></div>
+    </div>
+
+    <div class="admin-tabs">
+      <div class="admin-tab active" onclick="setAdminTab('requests',this)">📋 Sponsor Requests <span class="cnt" id="cnt-req">0</span></div>
+      <div class="admin-tab" onclick="setAdminTab('pending',this)">⏳ Pending <span class="cnt" id="cnt-pending" style="background:var(--yellow)">0</span></div>
+      <div class="admin-tab" onclick="setAdminTab('approved',this)">✅ Approved <span class="cnt" id="cnt-approved" style="background:var(--green)">0</span></div>
+      <div class="admin-tab" onclick="setAdminTab('rejected',this)">❌ Rejected <span class="cnt" id="cnt-rejected" style="background:var(--red)">0</span></div>
+      <div class="admin-tab" onclick="setAdminTab('users',this)">👥 Users <span class="cnt" id="cnt-users" style="background:var(--accent1)">0</span></div>
+    </div>
+
+    <div id="adminContent"></div>
+  </div>
+</div>
+
+<!-- CONTACT MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3 id="modalName"></h3>
+    <p id="modalTagline"></p>
+    <div class="modal-contact" id="modalContact"></div>
+    <button class="modal-close" onclick="closeModal()">Close</button>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════
+const ADMIN_USER='admin', ADMIN_PASS='admin123';
+let currentPage='landing';
+let currentUser=null;  // { name, email, role:'user'|'sponsor', college?, company?, industry? }
+let isAdmin=false;
+let adminTab='requests';
+let currentEvent='all';
+let nextSponsorId=100;
+
+// Registered accounts (pre-seeded)
+const accounts=[
+  {name:'Demo User',email:'user@demo.com',pass:'demo123',role:'user',college:'IIT Madras'},
+  {name:'Demo Sponsor',email:'sponsor@demo.com',pass:'demo123',role:'sponsor',company:'Demo Corp',industry:'Technology',applicationId:null},
+];
+
+// Sponsor applications queue
+let applications=[];
+
+// Base approved sponsors (pre-loaded)
+let approvedSponsors=[
+  {id:1,name:'TechNova Solutions',category:'IT & Software',logo:'🚀',color:'#6366f1',events:['tech','science'],tier:'platinum',desc:'Leading software company empowering the next generation of developers with tools, mentorship, and funding.',offerings:['Cash Sponsorship','API Credits','Mentors','Internships'],contact:{person:'Arjun Mehta',phone:'+91 98765 43210',email:'sponsor@technova.io',website:'www.technova.io',city:'Bengaluru'}},
+  {id:2,name:'RedBull India',category:'Beverages',logo:'🐂',color:'#dc2626',events:['sports','music','cultural'],tier:'gold',desc:'Energize your event! RedBull sponsors high-energy events with product placements, branding, and cash grants.',offerings:['Product Supply','Brand Activation','Cash Grant','Media'],contact:{person:'Priya Nair',phone:'+91 90000 12345',email:'events@redbull.in',website:'www.redbull.com/in',city:'Mumbai'}},
+  {id:3,name:'Google Developer Student Clubs',category:'Technology',logo:'🔵',color:'#4285f4',events:['tech','science','business'],tier:'platinum',desc:"Google's student program provides cloud credits, swag, certification vouchers and technical support.",offerings:['GCP Credits','Swag Kits','Certifications','Tech Support'],contact:{person:'GDSC Team',phone:'+91 80000 11223',email:'gdsc-india@google.com',website:'gdsc.community',city:'Hyderabad'}},
+  {id:4,name:'Decathlon India',category:'Sports & Fitness',logo:'🏅',color:'#0066cc',events:['sports'],tier:'gold',desc:'Decathlon provides sports equipment, medals, jerseys, and cash support for college sports tournaments.',offerings:['Equipment','Medals & Trophies','Jerseys','Cash Prize'],contact:{person:'Sanjay Kumar',phone:'+91 97001 56789',email:'b2b@decathlon.in',website:'www.decathlon.in',city:'Bengaluru'}},
+  {id:5,name:'BookMyShow',category:'Entertainment',logo:'🎟️',color:'#e91e8c',events:['cultural','music'],tier:'gold',desc:'BookMyShow partners with cultural fests for ticketing, promotion, and cash sponsorships.',offerings:['Free Ticketing','Digital Promotion','Cash Sponsorship','Livestream'],contact:{person:'Riya Shah',phone:'+91 98001 77654',email:'partnerships@bookmyshow.com',website:'www.bookmyshow.com',city:'Mumbai'}},
+  {id:6,name:'Startup India Hub',category:'Government & Finance',logo:'🇮🇳',color:'#ff9933',events:['business','social','science'],tier:'platinum',desc:'Government-backed initiative funding college business summits and social impact drives.',offerings:['Grants up to ₹5L','Mentorship','Incubation Access','Recognition'],contact:{person:'Kavitha Rao',phone:'+91 11 2345 6789',email:'support@startupindia.gov.in',website:'www.startupindia.gov.in',city:'New Delhi'}},
+  {id:7,name:'Noise Fit',category:'Consumer Electronics',logo:'🎧',color:'#22d3ee',events:['music','sports','cultural'],tier:'silver',desc:'Noise sponsors college events with product giveaways, brand activations, and exciting cash prizes.',offerings:['Product Giveaways','Prize Sponsorship','Brand Activation','Social Media'],contact:{person:'Ankit Joshi',phone:'+91 95501 33221',email:'collab@gonoise.com',website:'www.gonoise.com',city:'Gurugram'}},
+  {id:8,name:'HDFC SmartUp',category:'Banking & Finance',logo:'💳',color:'#004c8c',events:['business','social'],tier:'gold',desc:"HDFC Bank's SmartUp program funds student-led business and social entrepreneurship events.",offerings:['Cash Grants','Financial Literacy','Banking Workshops','Networking'],contact:{person:'Meera Krishnan',phone:'+91 22 6652 1234',email:'smartup@hdfcbank.com',website:'www.hdfcbank.com',city:'Mumbai'}},
+  {id:9,name:'Notion for Students',category:'Productivity Software',logo:'⬛',color:'#ffffff',events:['tech','business'],tier:'silver',desc:'Notion sponsors hackathons and business events with Pro plans, branded swag, and cash awards.',offerings:['Pro Workspace','Swag','Cash Awards','Workshop Sessions'],contact:{person:'Notion EDU Team',phone:'+1 800-123-4567',email:'edu@makenotion.com',website:'www.notion.so/students',city:'Remote/Global'}},
+  {id:10,name:'WWF India',category:'Environment & NGO',logo:'🐼',color:'#5c9e31',events:['social','science'],tier:'bronze',desc:'WWF partners with college events to promote sustainability, conservation, and awareness campaigns.',offerings:['Campaign Materials','Expert Speakers','Awareness Kits','Certifications'],contact:{person:'Dr. Suresh Babu',phone:'+91 11 4150 4783',email:'campus@wwfindia.net',website:'www.wwfindia.org',city:'New Delhi'}},
+  {id:11,name:'Sony Music Campus',category:'Music & Media',logo:'🎵',color:'#d946ef',events:['music','cultural'],tier:'gold',desc:'Sony Music supports college music fests with artist collaborations, sound equipment, and grants.',offerings:['Artist Bookings','Sound Equipment','Digital Promotion','Grants'],contact:{person:'Zara Kapoor',phone:'+91 22 6600 4400',email:'campus@sonymusic.in',website:'www.sonymusic.com/in',city:'Mumbai'}},
+  {id:12,name:'HackerEarth',category:'Tech Platform',logo:'💻',color:'#2563eb',events:['tech'],tier:'silver',desc:'HackerEarth provides free hackathon platforms, problem sets, judge panels, and cash prizes.',offerings:['Platform Access','Problem Sets','Judge Panel','Cash Prizes'],contact:{person:'Dev Team Lead',phone:'+91 80001 23456',email:'events@hackerearth.com',website:'www.hackerearth.com',city:'Bengaluru'}},
+  {id:13,name:'Fevicol Creative Studio',category:'Art & Design',logo:'🎨',color:'#f59e0b',events:['cultural','music','social'],tier:'bronze',desc:"Fevicol's creative division sponsors art festivals with materials, supplies, and design competitions.",offerings:['Art Materials','Design Competitions','Cash Prizes','Workshops'],contact:{person:'Sneha Patil',phone:'+91 22 5000 7000',email:'creative@pidilite.com',website:'www.fevicol.com',city:'Mumbai'}},
+  {id:14,name:"BYJU's Campus",category:'EdTech',logo:'📚',color:'#7c3aed',events:['science','business','tech'],tier:'silver',desc:"BYJU's sponsors educational expos with scholarship grants, course access, and learning materials.",offerings:['Scholarships','Course Access','Learning Kits','Expert Talks'],contact:{person:'Rohit Shetty',phone:'+91 80080 09090',email:'campus@byjus.com',website:'www.byjus.com',city:'Bengaluru'}},
+];
+
+const tierOrder={platinum:0,gold:1,silver:2,bronze:3};
+let selectedRole='user';
+
+// ════════════════════════════════════════════
+//  PAGE & NAV
+// ════════════════════════════════════════════
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  currentPage=name;
+  renderNav();
+  window.scrollTo(0,0);
+}
+
+function goHome(){
+  if(isAdmin){showPage('admin');return;}
+  if(!currentUser){showPage('landing');return;}
+  if(currentUser.role==='user'){ showPage('browse'); }
+  else { renderSponsors('all'); showPage('browse'); }
+}
+
+function renderNav(){
+  const nav=document.getElementById('navActions');
+  if(isAdmin){
+    nav.innerHTML=`<div class="nav-avatar"><div class="dot" style="background:var(--accent2)"></div>Admin</div><button class="nav-pill dark" onclick="doAdminLogout()">Logout</button>`;
+  } else if(currentUser){
+    const color=currentUser.role==='user'?'var(--accent3)':'var(--accent2)';
+    const icon=currentUser.role==='user'?'🎓':'🏢';
+    const dashBtn=currentUser.role==='user'
+      ?``
+      :`<button class="nav-pill outline" onclick="showPage('sponsordash');renderSponsorDash()">My Application</button>`;
+    nav.innerHTML=`${dashBtn}<div class="nav-avatar"><div class="dot" style="background:${color}"></div>${icon} ${currentUser.name.split(' ')[0]}</div><button class="nav-pill dark" onclick="doLogout()">Logout</button>`;
+  } else {
+    nav.innerHTML=`<button class="nav-pill outline" onclick="showPage('login')">Login</button><button class="nav-pill" onclick="showPage('signup')">Sign Up Free</button>`;
+  }
+}
+
+// ════════════════════════════════════════════
+//  SIGNUP
+// ════════════════════════════════════════════
+function selectRole(r){
+  selectedRole=r;
+  document.getElementById('role-user').classList.toggle('selected',r==='user');
+  document.getElementById('role-sponsor').classList.toggle('selected',r==='sponsor');
+  document.getElementById('su_user_extra').style.display=r==='user'?'':'none';
+  document.getElementById('su_sponsor_extra').style.display=r==='sponsor'?'':'none';
+}
+
+function doSignup(){
+  const name=document.getElementById('su_name').value.trim();
+  const email=document.getElementById('su_email').value.trim().toLowerCase();
+  const pass=document.getElementById('su_pass').value;
+  const err=document.getElementById('su_error');
+
+  if(!name){err.textContent='Please enter your name.';return;}
+  if(!email||!email.includes('@')){err.textContent='Please enter a valid email.';return;}
+  if(pass.length<6){err.textContent='Password must be at least 6 characters.';return;}
+  if(accounts.find(a=>a.email===email)){err.textContent='An account with this email already exists.';return;}
+
+  const acct={name,email,pass,role:selectedRole};
+  if(selectedRole==='user'){
+    const college=document.getElementById('su_college').value.trim();
+    if(!college){err.textContent='Please enter your college name.';return;}
+    acct.college=college;
+  } else {
+    const company=document.getElementById('su_company').value.trim();
+    const industry=document.getElementById('su_industry').value;
+    if(!company){err.textContent='Please enter your company name.';return;}
+    if(!industry){err.textContent='Please select your industry.';return;}
+    acct.company=company;
+    acct.industry=industry;
+    acct.applicationId=null;
+  }
+  err.textContent='';
+  accounts.push(acct);
+  currentUser=acct;
+  showToast('✅ Account created! Welcome, '+name.split(' ')[0]+'!','green');
+
+  if(selectedRole==='user'){
+    document.getElementById('browseUserName').textContent=name.split(' ')[0];
+    renderSponsors('all');
+    showPage('browse');
+  } else {
+    document.getElementById('browseUserName').textContent=name.split(' ')[0];
+    renderSponsorDash();
+    renderSponsors('all');
+    showPage('browse');
+  }
+  renderNav();
+}
+
+// ════════════════════════════════════════════
+//  LOGIN
+// ════════════════════════════════════════════
+function doLogin(){
+  const email=document.getElementById('li_email').value.trim().toLowerCase();
+  const pass=document.getElementById('li_pass').value;
+  const err=document.getElementById('li_error');
+  const acct=accounts.find(a=>a.email===email&&a.pass===pass);
+  if(!acct){err.textContent='Invalid email or password.';return;}
+  err.textContent='';
+  currentUser=acct;
+  renderNav();
+  showToast('👋 Welcome back, '+acct.name.split(' ')[0]+'!','green');
+  if(acct.role==='user'){
+    document.getElementById('browseUserName').textContent=acct.name.split(' ')[0];
+    renderSponsors('all');
+    showPage('browse');
+  } else {
+    document.getElementById('browseUserName').textContent=acct.name.split(' ')[0];
+    renderSponsorDash();
+    renderSponsors('all');
+    showPage('browse');
+  }
+}
+
+function doLogout(){
+  currentUser=null;
+  renderNav();
+  showPage('landing');
+  showToast('Logged out successfully.');
+}
+
+// ════════════════════════════════════════════
+//  ADMIN LOGIN / LOGOUT
+// ════════════════════════════════════════════
+function doAdminLogin(){
+  const u=document.getElementById('al_user').value.trim();
+  const p=document.getElementById('al_pass').value;
+  const err=document.getElementById('al_error');
+  if(u===ADMIN_USER&&p===ADMIN_PASS){
+    isAdmin=true; err.textContent='';
+    renderAdminDashboard();
+    showPage('admin');
+    showToast('⚙ Admin dashboard loaded','green');
+  } else {
+    err.textContent='Invalid credentials.';
+    document.getElementById('al_pass').value='';
+  }
+}
+
+function doAdminLogout(){
+  isAdmin=false;
+  document.getElementById('al_user').value='';
+  document.getElementById('al_pass').value='';
+  showPage('landing');
+  renderNav();
+}
+
+// ════════════════════════════════════════════
+//  SPONSOR REGISTRATION FORM
+// ════════════════════════════════════════════
+function submitSponsorForm(){
+  const phone=document.getElementById('sf_phone').value.trim();
+  const city=document.getElementById('sf_city').value.trim();
+  const desc=document.getElementById('sf_desc').value.trim();
+  const checked=Array.from(document.querySelectorAll('.checkbox-grid input:checked'));
+  const err=document.getElementById('sf_error');
+
+  if(!phone){err.textContent='Please enter your phone number.';return;}
+  if(!city){err.textContent='Please enter your city.';return;}
+  if(!desc){err.textContent='Please write a brief description.';return;}
+  if(checked.length===0){err.textContent='Please select at least one event type.';return;}
+  err.textContent='';
+
+  const tier=(document.querySelector('input[name="sf_tier"]:checked')||{value:'silver'}).value;
+  const designation=document.getElementById('sf_designation').value.trim();
+  const website=document.getElementById('sf_website').value.trim();
+  const offeringsRaw=document.getElementById('sf_offerings').value.trim();
+  const events=checked.map(c=>c.value);
+  const refId='SB-'+Date.now().toString(36).toUpperCase();
+
+  const app={
+    id:nextSponsorId++,
+    refId,
+    name:currentUser.company,
+    category:currentUser.industry,
+    logo:'🏢',
+    color:'#a855f7',
+    events,
+    tier,
+    desc,
+    offerings:offeringsRaw?offeringsRaw.split(',').map(s=>s.trim()):['To be confirmed'],
+    status:'pending',
+    submittedAt:new Date().toLocaleString(),
+    ownerEmail:currentUser.email,
+    contact:{
+      person:currentUser.name,
+      phone,
+      email:currentUser.email,
+      website:website||'N/A',
+      city,
+      designation
+    }
+  };
+
+  applications.push(app);
+  currentUser.applicationId=app.id;
+
+  document.getElementById('tyRefId').textContent=refId;
+  refreshAdminCounts();
+  showPage('thankyou');
+  renderNav();
+}
+
+// ════════════════════════════════════════════
+//  SPONSOR DASHBOARD
+// ════════════════════════════════════════════
+function renderSponsorDash(){
+  const el=document.getElementById('sponsorDashContent');
+  if(!currentUser||currentUser.role!=='sponsor'){el.innerHTML='';return;}
+
+  const app=applications.find(a=>a.id===currentUser.applicationId);
+  if(!app){
+    el.innerHTML=`
+      <div class="no-app-card">
+        <div class="no-app-icon">📋</div>
+        <h3 style="font-family:'Syne',sans-serif;font-size:1.4rem;margin-bottom:10px">No Application Yet</h3>
+        <p style="color:var(--muted);margin-bottom:24px">You haven't submitted a sponsorship application yet.</p>
+        <button class="btn-submit" style="max-width:280px;margin:0 auto;display:block" onclick="renderSponsors('all');showPage('browse');setTimeout(()=>{const s=document.getElementById('sponsorRegSection');if(s)s.scrollIntoView({behavior:'smooth'})},100)">Complete Your Profile →</button>
+      </div>`;
+    return;
+  }
+
+  const bannerMap={
+    pending:{cls:'pending',icon:'⏳',title:'Application Under Review',msg:'Your application has been submitted and is awaiting admin approval. This usually takes 24 hours.'},
+    approved:{cls:'approved',icon:'✅',title:'Application Approved!',msg:'Congratulations! Your company is now live on SponsorBridge and visible to college organizers.'},
+    rejected:{cls:'rejected',icon:'❌',title:'Application Not Approved',msg:'Unfortunately your application was not approved. Please contact our team for more details and resubmission options.'}
+  };
+  const b=bannerMap[app.status];
+  const evMap={tech:'💻 Tech',cultural:'🎭 Cultural',sports:'⚽ Sports',business:'💼 Business',music:'🎵 Music',science:'🔬 Science',social:'🌱 Social'};
+
+  el.innerHTML=`
+    <div class="status-banner ${b.cls}">
+      <div class="status-banner-icon">${b.icon}</div>
+      <div><div class="status-banner-title">${b.title}</div><div class="status-banner-msg">${b.msg}</div></div>
+    </div>
+
+    <div class="app-detail-card">
+      <div class="app-detail-title">📄 Submitted Application Details</div>
+      <div class="app-detail-grid">
+        <div class="app-detail-item"><div class="app-detail-label">Company</div><div class="app-detail-val"><strong>${app.name}</strong></div></div>
+        <div class="app-detail-item"><div class="app-detail-label">Industry</div><div class="app-detail-val">${app.category}</div></div>
+        <div class="app-detail-item"><div class="app-detail-label">Contact Person</div><div class="app-detail-val">${app.contact.person}${app.contact.designation?' ('+app.contact.designation+')':''}</div></div>
+        <div class="app-detail-item"><div class="app-detail-label">Phone</div><div class="app-detail-val">${app.contact.phone}</div></div>
+        <div class="app-detail-item"><div class="app-detail-label">Email</div><div class="app-detail-val">${app.contact.email}</div></div>
+        <div class="app-detail-item"><div class="app-detail-label">City</div><div class="app-detail-val">${app.contact.city}</div></div>
+        <div class="app-detail-item"><div class="app-detail-label">Website</div><div class="app-detail-val">${app.contact.website}</div></div>
+        <div class="app-detail-item"><div class="app-detail-label">Preferred Tier</div><div class="app-detail-val"><span class="tier-badge tier-${app.tier}">${app.tier}</span></div></div>
+        <div class="app-detail-item"><div class="app-detail-label">Reference ID</div><div class="app-detail-val" style="color:var(--accent3);font-weight:600">${app.refId}</div></div>
+        <div class="app-detail-item"><div class="app-detail-label">Submitted At</div><div class="app-detail-val">${app.submittedAt}</div></div>
+        <div class="app-detail-item"><div class="app-detail-label">Status</div><div class="app-detail-val"><span class="req-status status-${app.status}">${app.status}</span></div></div>
+      </div>
+      <div style="margin-top:16px">
+        <div class="app-detail-label" style="margin-bottom:8px">Event Categories</div>
+        <div class="events-tags">${app.events.map(e=>`<span class="event-tag">${evMap[e]||e}</span>`).join('')}</div>
+      </div>
+      <div style="margin-top:16px">
+        <div class="app-detail-label" style="margin-bottom:8px">Description</div>
+        <p style="font-size:.9rem;color:var(--muted);line-height:1.6">${app.desc}</p>
+      </div>
+      <div style="margin-top:16px">
+        <div class="app-detail-label" style="margin-bottom:8px">Offerings</div>
+        <div class="offerings">${app.offerings.map(o=>`<span class="offering-tag">${o}</span>`).join('')}</div>
+      </div>
+    </div>
+    <div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:16px;font-size:.82rem;color:var(--muted)">
+      💡 To make changes to your application, please contact our admin team. Profile edits are handled manually to ensure quality.
+    </div>`;
+}
+
+// ════════════════════════════════════════════
+//  SPONSORS GRID
+// ════════════════════════════════════════════
+function renderSponsors(eventType){
+  const grid=document.getElementById('sponsorsGrid');
+  const label=document.getElementById('eventLabel');
+  const count=document.getElementById('countBadge');
+  const filtered=eventType==='all'?[...approvedSponsors]:approvedSponsors.filter(s=>s.events.includes(eventType));
+  filtered.sort((a,b)=>tierOrder[a.tier]-tierOrder[b.tier]);
+  const names={all:'All Sponsors',tech:'Tech & Hackathon Sponsors',cultural:'Cultural Fest Sponsors',sports:'Sports Sponsors',business:'Business Summit Sponsors',music:'Music & Arts Sponsors',science:'Science Expo Sponsors',social:'Social Impact Sponsors'};
+  label.textContent=names[eventType]||'Sponsors';
+  count.textContent=filtered.length+' sponsor'+(filtered.length!==1?'s':'')+' found';
+  document.getElementById('bStatTotal').textContent=approvedSponsors.length;
+  if(filtered.length===0){grid.innerHTML='<div class="empty-state"><div class="big-icon">🔍</div><p>No sponsors found for this category yet.</p></div>';return;}
+  const regSec=document.getElementById('sponsorRegSection');
+  if(regSec) regSec.style.display=(currentUser&&currentUser.role==='sponsor'&&!currentUser.applicationId)?'block':'none';
+  grid.innerHTML=filtered.map((s,i)=>`
+    <div class="sponsor-card" style="animation-delay:${i*.07}s">
+      <div class="card-header">
+        <div class="sponsor-logo" style="background:${s.color}22;border:1px solid ${s.color}44">${s.logo}</div>
+        <div><div class="sponsor-name">${s.name}</div><div class="sponsor-category">${s.category}</div></div>
+        <div class="tier-badge tier-${s.tier}">${s.tier}</div>
+      </div>
+      <div class="card-body">
+        <p class="sponsor-desc">${s.desc}</p>
+        <div class="offerings">${s.offerings.map(o=>`<span class="offering-tag">${o}</span>`).join('')}</div>
+        <div class="contact-grid">
+          <div class="contact-row"><span class="contact-icon">👤</span><span class="contact-val">${s.contact.person}</span></div>
+          <div class="contact-row"><span class="contact-icon">📍</span><span class="contact-val">${s.contact.city}</span></div>
+          <div class="contact-row"><span class="contact-icon">📞</span><span class="contact-val">${s.contact.phone}</span></div>
+          <div class="contact-row"><span class="contact-icon">✉️</span><span class="contact-val"><a href="mailto:${s.contact.email}">${s.contact.email}</a></span></div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="btn-contact" onclick="openModal(${s.id})">Contact Sponsor</button>
+        <button class="btn-website" onclick="window.open('https://${s.contact.website}','_blank')">🌐 Website</button>
+      </div>
+    </div>`).join('');
+}
+
+document.getElementById('eventTabs').addEventListener('click',e=>{
+  const tab=e.target.closest('.tab');
+  if(!tab)return;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  tab.classList.add('active');
+  currentEvent=tab.dataset.event;
+  renderSponsors(currentEvent);
+});
+
+// ════════════════════════════════════════════
+//  ADMIN DASHBOARD
+// ════════════════════════════════════════════
+function refreshAdminCounts(){
+  const total=applications.length;
+  const pending=applications.filter(r=>r.status==='pending').length;
+  const approved=applications.filter(r=>r.status==='approved').length;
+  const rejected=applications.filter(r=>r.status==='rejected').length;
+  const userCount=accounts.filter(a=>a.role==='user').length;
+  document.getElementById('aS-total').textContent=total;
+  document.getElementById('aS-pending').textContent=pending;
+  document.getElementById('aS-approved').textContent=approved;
+  document.getElementById('aS-rejected').textContent=rejected;
+  document.getElementById('aS-live').textContent=approvedSponsors.length;
+  document.getElementById('aS-users').textContent=userCount;
+  document.getElementById('cnt-req').textContent=total;
+  document.getElementById('cnt-pending').textContent=pending;
+  document.getElementById('cnt-approved').textContent=approved;
+  document.getElementById('cnt-rejected').textContent=rejected;
+  document.getElementById('cnt-users').textContent=userCount;
+}
+
+function setAdminTab(tab,el){
+  adminTab=tab;
+  document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderAdminContent();
+}
+
+function renderAdminDashboard(){refreshAdminCounts();renderAdminContent();}
+
+function renderAdminContent(){
+  const el=document.getElementById('adminContent');
+  refreshAdminCounts();
+
+  if(adminTab==='users'){
+    const users=accounts.filter(a=>a.role==='user');
+    const sponsors=accounts.filter(a=>a.role==='sponsor');
+    if(users.length===0&&sponsors.length===0){
+      el.innerHTML='<div class="admin-empty"><div class="big-icon">👥</div><p>No registered users yet.</p></div>';return;
+    }
+    el.innerHTML=`
+      ${sponsors.length?`<div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:14px">🏢 Sponsors (${sponsors.length})</div>
+      <div class="users-grid" style="margin-bottom:32px">${sponsors.map(u=>{
+        const app=applications.find(a=>a.ownerEmail===u.email);
+        return `<div class="user-card"><div class="user-card-header"><div class="user-avatar" style="background:rgba(168,85,247,.15)">🏢</div><div><div class="user-name">${u.name}</div><span class="user-role-tag role-sponsor-tag">Sponsor</span></div></div><div class="user-detail">📧 ${u.email}<br>🏭 ${u.company||'—'} · ${u.industry||'—'}<br>📋 Status: ${app?`<span class="req-status status-${app.status}" style="padding:2px 10px">${app.status}</span>`:'No application'}</div></div>`;
+      }).join('')}</div>`:''}
+      ${users.length?`<div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:14px">🎓 College Users (${users.length})</div>
+      <div class="users-grid">${users.map(u=>`<div class="user-card"><div class="user-card-header"><div class="user-avatar" style="background:rgba(34,211,238,.15)">🎓</div><div><div class="user-name">${u.name}</div><span class="user-role-tag role-user-tag">User</span></div></div><div class="user-detail">📧 ${u.email}<br>🏫 ${u.college||'—'}</div></div>`).join('')}</div>`:''}`;
+    return;
+  }
+
+  const filtered=adminTab==='requests'?applications:applications.filter(r=>r.status===adminTab);
+  if(filtered.length===0){
+    const msgs={requests:'No sponsor registrations yet.',pending:'No pending requests. All caught up! ✅',approved:'No approved sponsors yet.',rejected:'No rejected requests.'};
+    el.innerHTML=`<div class="admin-empty"><div class="big-icon">${adminTab==='pending'?'✅':adminTab==='approved'?'🎉':adminTab==='rejected'?'🗑️':'📭'}</div><p>${msgs[adminTab]||''}</p></div>`;
+    return;
+  }
+
+  el.innerHTML='<div class="requests-list">'+filtered.slice().reverse().map(req=>{
+    const evMap={tech:'💻',cultural:'🎭',sports:'⚽',business:'💼',music:'🎵',science:'🔬',social:'🌱'};
+    const evLabel=req.events.map(e=>(evMap[e]||'')+' '+e).join(', ');
+    let actionBtns='';
+    if(req.status==='pending') actionBtns=`<button class="btn-approve" onclick="approveReq(${req.id})">✅ Approve & Publish</button><button class="btn-reject" onclick="rejectReq(${req.id})">❌ Reject</button>`;
+    else if(req.status==='approved') actionBtns=`<button class="btn-reject" onclick="rejectReq(${req.id})">❌ Revoke Approval</button>`;
+    else actionBtns=`<button class="btn-approve" onclick="approveReq(${req.id})">✅ Approve Instead</button>`;
+    return `<div class="request-card">
+      <div class="request-header" onclick="toggleReq(${req.id})">
+        <div class="req-logo">${req.logo}</div>
+        <div class="req-info"><div class="req-name">${req.name}</div><div class="req-meta">${req.category} · ${req.submittedAt} · Ref: ${req.refId}</div></div>
+        <div class="req-status status-${req.status}">${req.status}</div>
+        <div class="req-expand" id="reqArr-${req.id}">▼</div>
+      </div>
+      <div class="request-body" id="reqBody-${req.id}">
+        <div class="req-detail-grid">
+          <div class="req-detail-item"><div class="req-detail-label">Contact</div><div class="req-detail-val">${req.contact.person}${req.contact.designation?' ('+req.contact.designation+')':''}</div></div>
+          <div class="req-detail-item"><div class="req-detail-label">Email</div><div class="req-detail-val"><a href="mailto:${req.contact.email}" style="color:var(--accent3)">${req.contact.email}</a></div></div>
+          <div class="req-detail-item"><div class="req-detail-label">Phone</div><div class="req-detail-val">${req.contact.phone}</div></div>
+          <div class="req-detail-item"><div class="req-detail-label">City</div><div class="req-detail-val">${req.contact.city}</div></div>
+          <div class="req-detail-item"><div class="req-detail-label">Website</div><div class="req-detail-val">${req.contact.website}</div></div>
+          <div class="req-detail-item"><div class="req-detail-label">Tier</div><div class="req-detail-val"><span class="tier-badge tier-${req.tier}">${req.tier}</span></div></div>
+          <div class="req-detail-item"><div class="req-detail-label">Events</div><div class="req-detail-val">${evLabel}</div></div>
+          <div class="req-detail-item"><div class="req-detail-label">Description</div><div class="req-detail-val">${req.desc}</div></div>
+        </div>
+        <div class="req-actions">${actionBtns}</div>
+      </div>
+    </div>`;
+  }).join('')+'</div>';
+}
+
+function toggleReq(id){
+  var b=document.getElementById('reqBody-'+id);
+  var a=document.getElementById('reqArr-'+id);
+  b.classList.toggle('open'); a.classList.toggle('open');
+}
+
+function approveReq(id){
+  const req=applications.find(r=>r.id===id);
+  if(!req)return;
+  approvedSponsors=approvedSponsors.filter(s=>s.id!==id);
+  req.status='approved';
+  approvedSponsors.push({id:req.id,name:req.name,category:req.category,logo:req.logo,color:req.color,events:req.events,tier:req.tier,desc:req.desc,offerings:req.offerings,contact:{person:req.contact.person,phone:req.contact.phone,email:req.contact.email,website:req.contact.website,city:req.contact.city}});
+  renderSponsors(currentEvent);
+  renderAdminDashboard();
+  // Update sponsor's dash if they're logged in
+  if(currentUser&&currentUser.role==='sponsor'&&currentUser.applicationId===id) renderSponsorDash();
+  showToast('✅ '+req.name+' approved and is now live!','green');
+}
+
+function rejectReq(id){
+  const req=applications.find(r=>r.id===id);
+  if(!req)return;
+  if(req.status==='approved') approvedSponsors=approvedSponsors.filter(s=>s.id!==id);
+  req.status='rejected';
+  renderSponsors(currentEvent);
+  renderAdminDashboard();
+  if(currentUser&&currentUser.role==='sponsor'&&currentUser.applicationId===id) renderSponsorDash();
+  showToast('❌ '+req.name+' rejected.','red');
+}
+
+// ════════════════════════════════════════════
+//  MODAL
+// ════════════════════════════════════════════
+function openModal(id){
+  const s=approvedSponsors.find(x=>x.id===id);
+  if(!s)return;
+  document.getElementById('modalName').textContent=s.name;
+  document.getElementById('modalTagline').textContent=s.category+' · '+s.tier.charAt(0).toUpperCase()+s.tier.slice(1)+' Sponsor';
+  document.getElementById('modalContact').innerHTML=
+    `<div class="modal-contact-item"><span>👤</span><div><small style="color:var(--muted);font-size:.72rem">CONTACT PERSON</small><div>${s.contact.person}</div></div></div>
+     <div class="modal-contact-item"><span>📞</span><div><small style="color:var(--muted);font-size:.72rem">PHONE</small><div>${s.contact.phone}</div></div></div>
+     <div class="modal-contact-item"><span>✉️</span><div><small style="color:var(--muted);font-size:.72rem">EMAIL</small><div><a href="mailto:${s.contact.email}" style="color:var(--accent3)">${s.contact.email}</a></div></div></div>
+     <div class="modal-contact-item"><span>🌐</span><div><small style="color:var(--muted);font-size:.72rem">WEBSITE</small><div>${s.contact.website}</div></div></div>
+     <div class="modal-contact-item"><span>📍</span><div><small style="color:var(--muted);font-size:.72rem">LOCATION</small><div>${s.contact.city}</div></div></div>`;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('open');}
+document.getElementById('modalOverlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+
+// ════════════════════════════════════════════
+//  TOAST
+// ════════════════════════════════════════════
+let toastTimer;
+function showToast(msg,type){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast show '+(type||'');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+// ════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════
+renderNav();
+</script>
+</body>
+</html>
